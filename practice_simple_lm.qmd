@@ -34,7 +34,7 @@ What is the difference between *y* = *b~0~* + *b~1~x* and *y* = *mx* + *b*, and 
 
 #### Answer:
 
-(write your answer here)
+(y = b0 + b1x is used in statistics, y = mx+b is used in algebra and geometry)
 
 ### Question 2
 
@@ -42,7 +42,7 @@ Think back to our class discussion and your previous studies in math. Tell me be
 
 #### Answer:
 
-(write your answer here)
+(y is the output of the equation, b0 is the intercept and b1 is the slope)
 
 ## Let's try it
 
