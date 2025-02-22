@@ -225,9 +225,15 @@ anova(m.best, m6)
 We didn't, however, explore interactions between the different predictors. We've already seen what model the stepwise regression says is best (above). Try building another model below that includes an interaction between two predictors, and see what you can do to compare and select the optimal model.
 
 ```{r}
+m.interaction <- lm(mpg ~ wt * hp, data = mtcars)
+summary(m.interaction)
+
+anova(m2, m.interaction)
 
 ```
 
-## Assignment #2
+Final verdict is m.best is the optimal model has the lowest AIC and all of the predictors are significant.
+
+##  Assignment #2
 
 Assignment #2 will cover linear models including non-linear transformations of predictors, exploring categorical predictors, and ultimately selecting the optimal model for prediction. You will be using `diamonds` data, which includes a nice balance of continuous and categorical data. I will post it online soon, and let you know when it is there. Tentative due date is next Friday 2/21.
