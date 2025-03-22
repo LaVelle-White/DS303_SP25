@@ -1,0 +1,258 @@
+---
+title: "Assignment 2: Wrapping up regression"
+author: 
+  - "Student Name"
+  - "DS303, SP25"
+  - "Prof. Amber Camp"
+date: 2/28/25
+format: html
+toc: true
+editor: visual
+theme: spacelab
+---
+
+# Assignment 2: Wrapping up linear and logistic regression\*
+
+Assignment 2 covers linear and logistic regression models and includes many of the topics we have covered over the entire semester. You will be using `palmerpenguins` data, which includes a nice variety of continuous and categorical predictors.
+
+To submit this assignment, render this file and save as a pdf. Upload the pdf to Canvas.
+
+\*This assignment does not include mixed effects models, but you will be seeing that on another assignment.
+
+## Load Packages
+
+```{r, message = FALSE}
+library(lme4)
+library(tidyverse)
+ install.packages("palmerpenguins") # install if needed
+library(palmerpenguins)
+```
+
+## Load Data
+
+Load the `penguins` data and examine it below (use `summary()`, etc.)
+
+```{r}
+penguins <- penguins
+head(penguins)
+view(penguins)
+
+
+```
+
+## Question 1: Describe the data
+
+What data is contained in this data set? Describe at least four variables (excluding `year`), including what they represent and their data type. Lastly, describe whether you think `year` would be a useful predictor in this data.
+
+(The data show data on penguins where island they are from species, bill length and depth, flipper lenght body mass and year data was recorded)
+
+## Question 2: EDA
+
+Explore your data visually. Create at least two visualizations that show the relationship between `flipper_length_mm` and its potential predictors.
+
+```{r, warning = FALSE}
+
+library(ggplot2)
+# Load the dataset / Remove NA values
+data <- na.omit(penguins)
+
+# Scatter Plot: Flipper Length vs. Body Mass
+ggplot(data, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point() +
+  labs(title = "Flipper Length vs. Body Mass",
+       x = "Flipper Length (mm)",
+       y = "Body Mass (g)") +
+  theme_minimal()
+
+# Box Plot: Bill Length by Species
+ggplot(data, aes(x = species, y = bill_length_mm, fill = species)) +
+  geom_boxplot() +
+  labs(title = "Bill Length Distribution by Species",
+       x = "Penguin Species",
+       y = "Bill Length (mm)") +
+  theme_minimal()
+```
+
+## Question 3: Apply a linear regression
+
+Fit a simple linear regression model predicting `flipper_length_mm` from `body_mass_g`. Interpret the slope and intercept.
+
+```{r}
+
+# Fit simple linear regression model
+model_3 <- lm(flipper_length_mm ~ body_mass_g, data = penguins)
+
+# Display model summary
+summary(model_3)
+```
+
+Interpret your model output in your own words below. Be sure to include a sentence explaining how `body_mass_g` impacts `flipper_length_mm` and whether or not the effect is significant.
+
+**Answer:** (136.7 is the y or intercept this represent flipper length when body is 0. 0.01528 is the slope of body_mass_g this means the flipper length increase by 0.01528 on average. The p-value being below 0.05 means body mass is a highly significant predictor of flipper length. R-squared 0.759 means 75.9 of the flipper length can be explained by body mass. Residual standard error being 6.913 means the model predictions are on average 6.91mm off from the average flipper length.)
+
+## Question 4: Apply a multiple linear regression
+
+Fit a linear regression model predicting `flipper_length_mm` from both `body_mass_g` and `bill_length_mm`. Interpret the slopes and intercept.
+
+```{r}
+
+# Fit multiple linear regression model
+model_4 <- lm(flipper_length_mm ~ body_mass_g + bill_length_mm, data = penguins)
+
+# Display model summary
+summary(model_4)
+```
+
+Similar to Question 3, interpret the model output in your own words here:
+
+**Answer:** (The regression model predicts flipper length using body mass and bill length. Where 122.0(the intercept) is shows body mass and bill length are zero. And for each additional gram of body mass the flipper length increase by 0.01305. When slope of bill_length_mm increases 1mm the flipper length increases 0.5492 mm )
+
+## Question 5: Include an interaction
+
+Fit a simple linear regression model predicting `flipper_length_mm` from `body_mass_g,` `bill_length_mm`, and the interaction of the two. Interpret the slopes and intercept.
+
+```{r}
+
+model_5 <- lm(flipper_length_mm ~ body_mass_g * bill_length_mm, data = penguins)
+
+# Display model summary
+summary(model_5)
+```
+
+Interpret the model output in your own words below. If there was a change in the pattern of significance, try to explain the logic below as well.
+
+**Answer:** (Flipper Length = 170.6 +(0.0004364 x Body Mass) +(-0.5051 x Bill Length) + (0.0002707 x Body Mass x Bill Length) Intercept 170.6 mm is when the body mass and flipper length are zero. On it's own body mass doesn't impact flipper length in our model. That means when bill length is held constant, body mass alone doesn't explain much variation in flipper length)
+
+## Question 6: Compare models
+
+Compare the models you built in Questions 4 and 5 using `anova()`.
+
+```{r}
+
+# Compare models 4 & 5 using ANOVA
+anova(model_4, model_5)
+```
+
+-   Which is the better model? How do you know?
+
+    -   **Answer:** (Model 2 is better, the ANOVA table shows a significant improvement in the model fit. Model 2 is more accurate because it combines the effect of body mass bill length working together.)
+
+-   Is it possible to compare the models from Questions 3 and 5 using the same method? Why or why not?
+
+    -   **Answer:** (Model 3 does not contain all variables and Model 5 is not nested so we can not use ANOVA.)
+
+## Question 7: Categorical predictors
+
+Build a linear model that includes a categorical predictor of your choice. It is fine to stick with dummy coding. Optional: apply a different coding scheme AND interpret the output correctly for +1 extra credit.
+
+```{r}
+
+# Convert species to a factor variable
+penguins$species <- as.factor(penguins$species)
+
+# Fit a linear model including Species as a categorical predictor
+model_7 <- lm(flipper_length_mm ~ body_mass_g + species, data = penguins)
+
+# Display model summary
+summary(model_7)
+
+# Identify reference level
+levels(penguins$species)
+```
+
+-   What is the reference level of your categorical predictor?
+
+    -   **Answer: Adelie**
+
+-   What is your interpretation of this model output? Address all coefficients.
+
+    -   **Answer: The model shows that both body mass and species type significantly impact flipper length. As body mass increase flipper increases slightly. The Body mass coefficient is 0.0084 mm so for every 1 gram increase in body mass the flipper length increase 0.0084. Chinstrap coefficient is 5.597 so Chinstrap have flipper are 5.6 length longer that Adelie penguins when controlling for body mass. Gentoo coefficient is 15.68mm meaning Gentoo have 15.7mm longer flipper length than Adelie penguins when controlling for body mass.**
+
+## Question 8: Relevel your categorical variable
+
+Relevel your categorical variable so that a **different** level becomes the reference. Then, run the same model you did in Question 7 and interpret the output.
+
+Relevel:
+
+```{r}
+# Set a new reference level (e.g., setting "Chinstrap" as the reference)
+penguins$species <- relevel(penguins$species, ref = "Chinstrap")
+
+# Re-run the model with the new reference level
+model_8 <- lm(flipper_length_mm ~ body_mass_g + species, data = penguins)
+
+# Display model summary
+summary(model_8)
+
+```
+
+Apply model from Question 7:
+
+```{r}
+# Relevel the Species variable (e.g., setting "Chinstrap" as the new reference level)
+penguins$species <- relevel(penguins$species, ref = "Chinstrap")
+
+# Apply the same model from Question 7
+model_8 <- lm(flipper_length_mm ~ body_mass_g + species, data = penguins)
+
+# Display model summary
+summary(model_8)
+
+```
+
+-   What is the new reference level of your categorical predictor?
+
+    -   **Answer: Gentoo**
+
+-   What is your interpretation of this new model output? Address all coefficients.
+
+    -   **Answer: With Gentoo being our predictor the model now shows coefficients of the intercept at 174.6mm, body_mass_g at 0.0084, Adelie at -15.7, and Chinstrap at 10.1 showing Gentoo has short flipper when controlling for body mass. This doesn't change the relationship of the variables but changes perspective of the comparisons.**
+
+## Question 9: Apply a logistic regression
+
+Apply a logistic regression. Include as many predictor variables as you'd like. Remember that your predicted outcome variable needs to be binary (or categorical with two levels).
+
+\
+Hint: You could use `sex` or create a binary variable of your own (e.g., Gentoo vs. non-Gentoo) to test your model.
+
+```{r}
+# Convert Sex to a binary factor variable
+penguins$sex <- as.factor(penguins$sex)
+
+# Fit logistic regression model predicting Sex
+logistic_model <- glm(sex ~ body_mass_g + bill_length_mm, data = penguins, family = binomial)
+
+# Display model summary
+summary(logistic_model)
+```
+
+What are your key takeaways from this model?
+
+**Answer:** (The model shows body mass, bill length and species can be used to predict the sex of a penguin. So if the coefficient for body mass is positive it means that as body mass increases, the odds of being male increase. A significant p-value means they are a good indicator for sex. )
+
+## Question 10: Synthesize the information
+
+Imagine you’re a biologist studying penguin populations. Which predictors do you think are most important to measure or record in the field to predict flipper length? Why?
+
+**Answer:** (Species, Body Mass and Bill length. Here's why multiple regression models have shown they are statistically significant predictors of flipper length. Body mass and bill length have been proven to show combining them give a more accurate prediction.)
+
+## Bonus: Stepwise Regression
+
+Perform stepwise regression to find the best model for an outcome of your choice. You will likely encounter an error – fixing that error and explaining your findings will earn you +1 extra credit. Show your work.
+
+```{r}
+
+# Load the MASS library for stepwise selection
+library(MASS)
+
+# Apply stepwise regression
+stepwise_model <- stepAIC(lm(flipper_length_mm ~ body_mass_g + bill_length_mm + bill_depth_mm + species + island, 
+                             data = penguins), direction = "both")
+
+# Display the selected model
+summary(stepwise_model)
+```
+
+According to this stepwise regression, explain how the final model was selected.
+
+**Answer:** (The final model was selected based on the AIC for each possible model variation. The stepwise regression selected a model that included body mass, bill length, bill depth, species and island as predictors. Because while individually not every variable was statically significant removing any of them increase AIC model. )
