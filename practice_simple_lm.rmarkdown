@@ -1,0 +1,339 @@
+---
+title: "Practice: Simple Linear Regression"
+author: 
+  - "Student Name"
+  - "DS303, SP25"
+  - "Prof. Amber Camp"
+date: 1/17/25
+format: html
+editor: visual
+theme: spacelab
+---
+
+
+
+## Introduction to Simple Linear Regression
+
+This is an introduction to **simple linear regression**, a method used to model the relationship between two variables by fitting a straight line to the data. The goal is to see how one variable (the independent variable) affects another (the dependent variable).
+
+For example, you might predict a student’s test score (dependent variable) based on study hours (independent variable). Simple linear regression helps find a trend or regression line that best fits the data, allowing you to make predictions for varying study hours.
+
+Simple linear regression is useful for studying **cause-and-effect** or **making predictions**, especially when the relationship between the variables is linear. It works best with **continuous data**.
+
+## *y* = *mx* + *b* ?
+
+We talked a lot in class the other day about the basic regression equation. I presented it as:
+
+*y* = *b~0~* + *b~1~x*
+
+Many of you quickly noticed the similarity between *y* = *b~0~* + *b~1~x* and *y* = *mx* + *b.* And you're right–they are both basically the same formula for a straight line. Is there any actual difference at all?
+
+Yes! Despite, again, basically being the same thing, the difference in notation depends on context (when we use the two and how we discuss them). See what you can find online about this, and feel free to discuss with those around you.
+
+### Question 1
+
+What is the difference between *y* = *b~0~* + *b~1~x* and *y* = *mx* + *b*, and when might we use one over the other? Please use your own words
+
+#### Answer:
+
+(y = b0 + b1x is used in statistics, y = mx+b is used in algebra and geometry)
+
+### Question 2
+
+Think back to our class discussion and your previous studies in math. Tell me below what each part of the equation *y* = *b~0~* + *b~1~x* means. Do this from memory if you can!
+
+#### Answer:
+
+(y is the output of the equation, b0 is the intercept and b1 is the slope)
+
+## Let's try it
+
+Let's start by loading the `MASS` and `ISLR2` packages, which are very large collections of data sets and functions. You may need to install `ISLR2` and `lme4`.
+
+
+
+```{r, echo = FALSE, message = FALSE}
+# install.packages("ISLR2")
+# install.packages("lme4")
+
+library(MASS)
+library(ISLR2)
+library(lme4)
+```
+
+
+
+## Boston Housing Data
+
+The `ISLR2` library contains the `Boston` data set, which records `medv` (median house value) for 506 census tracts in Boston. We will seek to predict `medv` using 12 predictors such as `rmvar` (average number of rooms per house), `age` (proportion of owner-occupied units built prior to 1940) and `lstat` (percent of households with low socioeconomic status).
+
+### Question 3
+
+You can just call upon the data (it's already in the package). I'll get you started, but show me below how you'd explore the data even further by adding code in the below code chunk.
+
+
+
+```{r}
+head(Boston)
+data("Boston")
+
+```
+
+
+
+We learned in class that we can apply a simple linear regression using `lm`. Here is the basic format:
+
+
+
+```{r}
+model <- lm(y ~ x, data=df)
+```
+
+
+
+### Question 4
+
+Use the above basic format to create a linear regression model to predict the **median home value** (medv) based on the **percentage of lower status population** (lstat), using the data from the 'Boston' dataset. Assign it to the variable `lm.model`.
+
+
+
+```{r}
+lm.model <- lm(medv ~ lstat, data = Boston)
+```
+
+
+
+If you set it up right, you should be able to run your model name in the below code chunk and view the basic model output. Give it a try:
+
+
+
+```{r}
+(lm.model)
+
+```
+
+
+
+### Question 5
+
+What is your model output telling you?
+
+#### Answer
+
+(coefficients:)
+
+(Intercept) lstat
+
+34.55 -0.95\
+\
+y = b0 +b1x
+
+medv = 34.55 - 0.95 \* lstat
+
+medv is the median value of homes in Boston based on the income of the people in the nieghborhood (lstat) for every 1% of the lower icome the price drops
+
+You can also try `summary(lm.model)`.
+
+
+
+```{r}
+summary(lm.model)
+```
+
+
+
+### Question 6
+
+What additional information do you get from this summary of the model output?
+
+#### Answer
+
+(Call, Residuals, More deatails on Coeffiecents, Sigif. codes, Reidual standard error, Multile R-squard, and F-statistic )\
+Residuals shows how far the home prices are from the predicted value.
+
+Max/ Min show the highest and lowest home values
+
+Median (\~-1.32) show the model how much the model overestimates the home prices.\
+1Q(-3.99) and 3Q(2.034) Show the error fall within -3.00 and +2.034 of the predictions
+
+## confint() and predict()
+
+In order to obtain a confidence interval for the coefficient estimates, we can use the `confint()` command. The `predict()` function can be used to produce confidence intervals and prediction intervals for the prediction of `medv` for a given value of `lstat`. Run these and see if you can figure out what it is telling you.
+
+
+
+```{r}
+confint(lm.model)
+
+predict(lm.model, data.frame(lstat = (c(5, 10, 15))), interval = "confidence")
+
+predict(lm.model, data.frame(lstat = (c(5, 10, 15))), interval = "prediction")
+```
+
+
+
+### Question 7
+
+What do you think the above `confint()` and `predict()` information means? It's okay to guess.
+
+#### Answer
+
+(conflict(lm.model) - provides confidence intervals for the regression coefficients, the confidence interval for the intercept is between \$33448 and \$35,659.
+
+The 95% confidence internal for lstat is between -1.026 and -0.874. This means each 1% increase lower households home price by about \$950. The true effect of lstat on medv lies within this range.
+
+predict(lm.model, data.frame(lstat = (c(5, 10, 15))), interval = "confidence")
+
+This predicts the average home price for neighborhoods
+
+The confidence Interval (lwr, upr) is 95% that the average home price in a neighborhood. The values estimate the expected home price for different levels of lstat, high prcecision.
+
+predict(lm.model, data.frame(lstat = (c(5, 10, 15))), interval = "prediction")
+
+This predicts the individual home prices in a neighborhood. THe predict interval(lwr, upr) is wider than the confidence interval because it account for individual variability
+
+```         
+2.5 %     97.5 % 
+(Intercept)
+lstat
+fit
+lwr
+upr )
+```
+
+## Visualizing
+
+Here is a simple base R way to plot this data:
+
+
+
+```{r}
+plot(Boston$lstat, Boston$medv)
+abline(lm.model)
+```
+
+
+
+### Question 8
+
+Can you convert the above code chunk to `ggplot`? Try below. Have fun with editing the appearance of your plot if you'd like :)
+
+
+
+```{r}
+# Load ggplot2
+library(ggplot2)
+
+# Create scatter plot with regression line
+ggplot(Boston, aes(x = lstat, y = medv)) +
+  geom_point(color = "blue", alpha = 0.6) +  
+# Scatter plot
+  geom_smooth(method = "lm", color = "red", se = FALSE) +  
+# Regression line
+  labs(title = "Relationship Between lstat and medv",
+       x = "Percentage of Lower-Income Households (lstat)",
+       y = "Median Home Value (medv)") +
+  theme_minimal()
+
+```
+
+
+
+In a future class, we'll explore some diagnostic plots and what that means for evaluating models. For now, just run the below and have a look:
+
+
+
+```{r}
+par(mfrow = c(2, 2))
+plot(lm.model)
+```
+
+
+
+## Run another model
+
+Now it's your turn to apply a linear regression to other variables from the Boston dataset.
+
+First, view the dataset. Where can you find information about these variables?
+
+
+
+```{r}
+View(Boston)
+```
+
+
+
+### Question 9
+
+What variables are you interested in exploring using a linear regression? Just pick and `x` and a `y` and describe your research question below in plain English:
+
+#### Answer
+
+(I decided to used lstat and medv to predict nox. I want know if lower income and median home value how show the likelihood of a environment being more polluted )
+
+### Question 10
+
+#### Part 1
+
+Build and run your model, examine the model output:
+
+
+
+```{r}
+### Correlation between lstat and nox
+
+cor(Boston$lstat, Boston$nox)
+
+### correlation between medv and nox
+cor(Boston$medv, Boston$nox)   
+
+lm.nox <- lm(nox ~ lstat + medv, data = Boston)
+summary(lm.nox)
+
+
+
+
+```
+
+```{r}
+
+```
+
+
+
+#### Part 2
+
+Explain what you found in plain English. Do your best.
+
+#### Answer
+
+((cor)0.5909 this mean there is a strong positive relationship low income areas (lstat) and air pollution(nox)
+
+(cor)-0.4273 this means there is moderate negative relationship between home prices(modv) and air pollution(nox). When home prices go up air pollution goes down.
+
+R-squared + 0.3493 This means the model show 34.93% of the in air pollution
+
+Redidual Standard Error 0.09366 tells the average error in our predictions
+
+F-statistic = 135, p-value \< 2.2e-16 the p-value is small meaning the model is significant. )
+
+## The end!
+
+That's it for now. Please feel free to raise questions in class or via email!\
+\
+
+
+
+```{r}
+install.packages("gitcreds")
+library(gitcreds)
+gitcreds_set()
+
+```
+
+
+
+\
+\
+
