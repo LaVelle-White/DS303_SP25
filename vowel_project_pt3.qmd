@@ -20,17 +20,17 @@ library(tidyverse)
 library(lme4)
 library(lmerTest)
 
-# install.packages("phonR")
+install.packages("phonR")
 library(phonR)
 ```
 
 ## Load data
 
-Load your personal data (make sure you update from P101 -\> your P#)
+Load your personal data (make sure you update from P103 -\> your P#)
 
 ```{r}
 # read in data
-P101 <- read_csv("data/P101.csv")
+P103 <- read_csv("data/P103.csv")
 
 # convert variables to factor where needed
 convert_to_factor <- function(df, cols) {
@@ -38,10 +38,10 @@ convert_to_factor <- function(df, cols) {
   return(df)
 }
 
-P101 <- convert_to_factor(P101, c("ppt", "word", "ipa", "arpa", "onset", "offset", "environment", "real_word", "sex", "ethnicity", "birthplace", "home_state", "years_lived_hi", "L1", "exposure_langs_yn", "exposure_langs", "speak_other", "item_num", "rep"))
+P103 <- convert_to_factor(P103, c("ppt", "word", "ipa", "arpa", "onset", "offset", "environment", "real_word", "sex", "ethnicity", "birthplace", "home_state", "years_lived_hi", "L1", "exposure_langs_yn", "exposure_langs", "speak_other", "item_num", "rep"))
 
 # remove a couple words you won't be needing
-P101 <- P101 %>%
+P103 <- P103 %>%
   dplyr::filter(!word %in% c("cot", "caught")) # added dplyr to specify which 'filter' to use
 
 ```
@@ -61,7 +61,7 @@ all_data <- all_data %>%
 
 ```
 
-## Explain the Data 
+## Explain the Data
 
 (1 point)
 
@@ -70,6 +70,7 @@ In paragraph form:
 -   Describe where the data comes from
 -   Summarize the contents of the data (how many observations, participants, items, etc.)
 -   Mention any pre-processing steps taken. For example, I pre-processed this data by removing words that were obviously mispronounced before even sending it to you. Then, above, you converted certain variables to factor and removed the words "cot" and "caught", which are not relevant to your investigation. Have you done any additional processing?
+    -   In this data set we recorded our Spring 2025 modeling and prediction voice data. The class spoke various words into a mic in differing orders to prevent the data from being skewed.Cot and caught was removed from the data being it was not consistent with the rest of the data. I'm using the tidyverse package for cleaning, reshaping and visualizing the data.
 
 ## Variables of Interest
 
@@ -80,8 +81,34 @@ For this project, you will explore and analyze the [**class-wide data set**]{.un
 -   Briefly introduce the purpose of this project
 -   Identify and explain your variables of interest
 -   State research questions or hypotheses about this data
+    -   \(1\) My hypothesis is that the pronunciation of words change as we repeat the word. 2) The duration of word could be potentially related. Rep F1 and F2 and duration should a be related to hypothesis. )
 
 ## EDA and Vowel Plots
+
+```{r}
+
+# Ensure f1 and f2 are numeric
+P103 <- P103 %>%
+  mutate(f1 = as.numeric(f1),
+         f2 = as.numeric(f2),
+         word = as.character(word),
+         rep = as.factor(rep)) 
+
+all_data <- all_data %>%
+  mutate(f1 = as.numeric(f1),
+         f2 = as.numeric(f2),
+         word = as.character(word),
+         rep = as.factor(rep)) 
+
+# Combine both datasets
+P103$dataset <- "P103"
+all_data$dataset <- "all_data"
+combined_data <- bind_rows(P103, all_data)
+
+
+# Convert dataset label to factor
+combined_data$dataset <- as.factor(combined_data$dataset)
+```
 
 (3 points)
 
@@ -89,27 +116,105 @@ For this project, you will explore and analyze the [**class-wide data set**]{.un
 
 -   In a couple sentences, state your observations. Do you see any patterns or differences?
 
--   Include at least one visual that supports your hypothesis/justifies your models below, and explain
+-   Include at least one visual that supports your hypothesis/justifies your models below, and explain.
+
+    -   Because the were no clear patterns in the models decide to average the the sound per word. I shows us roughly where the vowel sound fell on the scale to support my hypothesis.
 
 ```{r}
-
+ggplot(P103, aes(x = f2, y = f1, color = rep)) +  # Color by repetition
+  geom_point(size = 3, alpha = 0.7) +  # Plot vowel points
+  geom_text(aes(label = word), hjust = 0.5, vjust = 1.5, size = 4) +  # Label words
+  scale_x_reverse() +  # Reverse x-axis (F2)
+  scale_y_reverse() +  # Reverse y-axis (F1)
+  labs(title = "Vowel Plot (P103 Data)", x = "F2 (Hz)", y = "F1 (Hz)", color = "Repetition") +
+  theme_minimal()
 ```
 
-## Model Selection and Justification
+```{r}
+ggplot(all_data, aes(x = f2, y = f1, color = rep)) +  # Color by repetition
+  geom_point(size = 3, alpha = 0.7) +  # Plot vowel points
+  geom_text(aes(label = word), hjust = 0.5, vjust = 1.5, size = 4) +  # Label words
+  scale_x_reverse() +  # Reverse x-axis (F2)
+  scale_y_reverse() +  # Reverse y-axis (F1)
+  labs(title = "Vowel Plot (All Data)", x = "F2 (Hz)", y = "F1 (Hz)", color = "Repetition") +
+  theme_minimal()
+```
+
+```{r}
+# Calculate average F1 and F2 for each word
+word_means <- all_data %>%
+  group_by(word) %>%
+  summarise(
+    mean_f1 = mean(f1, na.rm = TRUE),
+    mean_f2 = mean(f2, na.rm = TRUE)
+  )
+
+# Plot word-level averages
+ggplot(word_means, aes(x = mean_f2, y = mean_f1, label = word)) +
+  geom_point(color = "purple", size = 4) +
+  geom_text(hjust = 0.5, vjust = 1.5, size = 4) +
+  scale_x_reverse() +
+  scale_y_reverse() +
+  labs(title = "Vowel Plot (Average F1/F2 per Word)", x = "F2 (Hz)", y = "F1 (Hz)") +
+  theme_minimal()
+```
+
+## Model Selection and
+
+## Justification
 
 (3 points)
 
 -   You will build and analyze **two different statistical models** to investigate the relationship between your predictors and outcome variable
 
+-   There are clear patterns in either model between the F1/F2 or the repetition of the word. Which mean the study was conducted well.
+
+    -   Overall repetition had no effect on the F1/F2. Words was a better predictor of F1 but still was statically significant. In the linear mixed model word and speaker contributed to Hz variation but repetition still had no influence.
+
 -   The two models should differ in some way (e.g., one could include an additional or interaction term while the other does not)
+
+    -   The first is my personal vowel data and the second is the entire class data.
 
 -   What statistical models will you use to investigate the relationship between your predictors and outcome variable? (linear vs. logistic regression? mixed effects model?)
 
+    -   Mixed effects model
+
 -   Why did you select these models?
+
+    -   I wanted to know if the repetition of the word changed how the word were spoken. The reason I used the average model is be able to compare the average to the raw data and if I can find anything of value.
 
 -   Which variable(s) are included?
 
+    -    Words, Vowel sound F1/F2, and Repetition.
+
 ```{r}
+model_f1_lm <- lm(f1 ~ rep, data = all_data)
+summary(model_f1_lm)
+
+```
+
+```{r}
+model_f2_lm <- lm(f2 ~ rep, data = all_data)
+summary(model_f2_lm)
+
+```
+
+```{r}
+model_f1_word <- lm(f1 ~ rep + word, data = all_data)
+summary(model_f1_word)
+
+```
+
+```{r}
+
+model_f1_lmm <- lmer(f1 ~ rep + (1 | word), data = all_data)
+summary(model_f1_lmm)
+
+```
+
+```{r}
+model_f1_lmm2 <- lmer(f1 ~ rep + (1 | ppt) + (1 | word), data = all_data)
+summary(model_f1_lmm2)
 
 ```
 
@@ -119,7 +224,11 @@ For this project, you will explore and analyze the [**class-wide data set**]{.un
 
 -   Build and run both models and display their summaries
 
+    -    I used a linear statistical model. I'm predicting F1 and F2 with Repetition, Word and Vowel category.
+
 -   Compare the two models, assess model fit, and determine the better fitting one
+
+    -   The linear mixed model was the best because it can handle the repeating data properly. It is a more realistic model compare to the simple linear model.
 
 ```{r}
 
@@ -130,12 +239,16 @@ For this project, you will explore and analyze the [**class-wide data set**]{.un
 (3 points)
 
 -   Interpret coefficients and significance
--   Explain how the predictor variable(s) influence the outcome
+    -   the intercept (583.49) Rep2 -15.33, Rep3 -14.02 these are not significant because they are below the P-value \>0.05
+-   Explain how the predictor variable(s) influence the outcome. Rep is a fixed effect it is the numbered repetition of the word spoken word. Word had a random effect due to the word being spoken. And ppt was a random effect due to the variance of the speaker.
 
 ## Discussion and Conclusion
 
 (3 points)
 
 -   Summarize key findings
+    -   Repetition has no significant effect on F1/F2 score.
 -   Discuss implications
+    -   Most of the variance was due to the speaker and the word being spoken.
 -   Mention limitations
+    -   The input data was not controlled due the variance in where people were born, raised, gender, and other factors. Also the data set was small thus limiting results.
