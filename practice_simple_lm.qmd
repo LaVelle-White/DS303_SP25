@@ -10,6 +10,12 @@ editor: visual
 theme: spacelab
 ---
 
+```{r}
+install.packages(yaml)
+library("yaml")
+quarto_render("C:\Users\12103\DS303_SP25_Clean\practice_simple_lm.qmd", output_format = "pdf") #Emaple render to PDF
+```
+
 ## Introduction to Simple Linear Regression
 
 This is an introduction to **simple linear regression**, a method used to model the relationship between two variables by fitting a straight line to the data. The goal is to see how one variable (the independent variable) affects another (the dependent variable).
