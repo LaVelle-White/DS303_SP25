@@ -10,11 +10,7 @@ editor: visual
 theme: spacelab
 ---
 
-```{r}
-install.packages(yaml)
-library("yaml")
-quarto_render("C:\Users\12103\DS303_SP25_Clean\practice_simple_lm.qmd", output_format = "pdf") #Emaple render to PDF
-```
+
 
 ## Introduction to Simple Linear Regression
 
@@ -73,15 +69,12 @@ You can just call upon the data (it's already in the package). I'll get you star
 
 ```{r}
 head(Boston)
-data("Boston")
+#data("Boston")
 
 ```
 
 We learned in class that we can apply a simple linear regression using `lm`. Here is the basic format:
 
-```{r}
-model <- lm(y ~ x, data=df)
-```
 
 ### Question 4
 
@@ -279,12 +272,7 @@ F-statistic = 135, p-value \< 2.2e-16 the p-value is small meaning the model is 
 That's it for now. Please feel free to raise questions in class or via email!\
 \
 
-```{r}
-install.packages("gitcreds")
-library(gitcreds)
-gitcreds_set()
 
-```
 
 \
 \
