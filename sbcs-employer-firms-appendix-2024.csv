@@ -1,0 +1,87 @@
+appendix2025_report_on_employer_firms_findings_from_the_2024_small_business_credit_survey,x2
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+"Last updated: March 27, 2025",NA
+NA,NA
+Overview,NA
+NA,NA
+"This appendix provides additional detail for figures presented in the 2025 Report on Employer Firms: Findings from the 2024 Small Business Credit Survey. Percentages and sample sizes include only weighted responses from employer firms. Findings with a sample size <50 firms are omitted. Employer firm data are weighted by number of employees, age, industry, census division, urban/rural status, race/ethnicity of ownership, and gender of ownership. See the Methodology section of the report for additional details on the weighting. 
+
+Additionally, this appendix presents data for states and MSAs with at least 100 observations. The population data used to generate state and MSA level weights come from the U.S. Census Bureau’s 2022 Annual Business Survey (gender, race/ethnicity), 2022 Business Dynamic Statistics (firm age), and 2022 County Business Patterns (industry and firm size). Urban-Rural classification is done using USDA Rural-Urban Commuting Area codes.",NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+Citing SBCS data,NA
+NA,NA
+"Data for this report are from the 2024 Small Business Credit Survey (SBCS). Please use the following disclaimer if publishing any of these data or analyses derived from these data:
+The Federal Reserve Banks and the Federal Reserve System cannot vouch for the data or analyses derived from these data after the data have been retrieved from fedsmallbusiness.org.
+Source: Federal Reserve Banks, 2024 Small Business Credit Survey",NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+2024 SBCS definitions,NA
+NA,NA
+NA,NA
+Financial services providers and lenders:,"Self-reported source type at which the firm obtains financial services or applied for a loan, line of credit, or merchant cash advance product."
+"Large bank, small bank","Large banks are defined as those with at least $10B in total assets; small banks are those with less than $10B in total assets. For applicable questions, respondents are shown a list of large banks operating in their state to assist them with proper classification of their institution."
+NA,NA
+Online lender/fintech company,"Online lenders/fintech companies are nonbanks that operate online. Examples include OnDeck, CAN Capital, and PayPal Working Capital."
+Finance company,"Finance companies are nonbanks that provide loans, leases, and other financial services. Examples include mortgage companies, equipment dealers, insurance companies, and auto finance companies."
+NA,NA
+Credit union,Non-profit cooperative where members can borrow money at competitive rates from pooled deposits
+Community development financial institution (CDFI),CDFIs are financial institutions that provide credit and financial services to underserved markets and populations. CDFIs are certified by the CDFI Fund at the US Department of the Treasury.
+Financial services provider,"Financial services providers are entities at which the firm has an account or uses other financial services (including loans, payments processing, etc.)"
+Financial company that is not a bank,"Examples include payroll services and payments processing companies, fintech lenders, and finance companies."
+Financial institution or lender,"This category includes all bank or nonbank financial intermediaries, such as banks, finance companies, online lenders, and credit unions."
+Other lender,"Respondents who selected “other lender"" were asked to describe the source. They most frequently cited farm-lending institutions, friends/family/owner, nonprofit organizations, private investors, and government entities."
+NA,NA
+NA,NA
+Credit risk:,"Self-reported business credit score or personal credit score, depending on which is used to obtain financing for the business. If the firm uses both, the weaker score is used."
+Low credit risk,80-100 business credit score or 720+ personal credit score
+Medium credit risk,50-79 business credit score or 620-719 personal credit score
+High credit risk,1-49 business credit score or <620 personal credit score
+NA,NA
+Industry:,"Classified based on the description of what the business does, as provided by the survey respondent."
+Nonmanufacturing goods production & associated services,"Agriculture, Forestry, Fishing, and Hunting; Mining, Quarrying, and Oil and Gas Extraction; Utilities; Construction; Wholesale Trade; Transportation and Warehousing (NAICS: 11, 21, 22, 23, 42, 48-49)"
+NA,NA
+Manufacturing,Manufacturing (NAICS: 31-33)
+Retail,Retail Trade (NAICS: 44-45)
+Leisure & hospitality,"Arts, Entertainment, and Recreation; Accommodation and Food Services (NAICS: 71, 72)"
+Finance & insurance,Finance and Insurance (NAICS: 52)
+Healthcare & education,"Educational Services; Health Care and Social Assistance (NAICS: 61, 62)"
+Professional services & real estate,"Information; Real Estate and Rental and Leasing; Professional, Scientific, and Technical Services; Management of Companies and Enterprises (NAICS: 51, 53, 54, 55)"
+Business support & consumer services,"Administrative and Support and Waste Management and Remediation Services; Other Services (NAICS: 56, 81)"
+NA,NA
+Geographic location:,"Location of business headquarters, classified using the business's zip-code, which is asked in the SBCS and matched with Rural-Urban Commuting Area codes created by the U.S. Department of Agriculture"
+NA,NA
+Urban,"Headquarters located in or associated with an area with at least 10% commuting flow to an urban area of 50,000 people or greater (RUCA codes 1-3)"
+Rural,"Headquarters located in or associated with an area with less than 10% commuting flow to an urban area of 50,000 people or greater (RUCA codes 4-10)"
+NA,NA
+Race/ethnicity of ownership:,"Classified using race and ethnicity of firm owner(s), as provided by the survey respondent (the SBCS uses US Census-defined categories of race and ethnicity)"
+White-owned,Owner(s) with 50% or more controlling interest is(are) non-Hispanic white
+Black- or African American-owned,Owner(s) with more than 50% controlling interest is(are) non-Hispanic Black or African American
+Asian-owned,Owner(s) with more than 50% controlling interest is(are) not non-Hispanic Asian or Pacific Islander
+American Indian or Alaska Native-owned,Owner(s) with more than 50% controlling interest is(are) non-Hispanic American Indian or Alaska Native
+Hispanic-owned,Owner(s) with more than 50% controlling interest is(are) Hispanic
+NA,NA
+NA,NA
+Gender of ownership:,"Classified using gender of firm owner(s), as provided by the survey respondent."
+Men-owned,More than 50% of the business is owned by a man/men
+Equally owned,50% of the business is owned by a man/men and 50% of the business is owned by a woman/women
+Women-owned,More than 50% of the business is owned by a woman/women
+NA,NA
+NA,NA
+Disability:,Classified using owner's self-reported disability status. The Americans with Disabilities Act defines an individual with a disability as a person who has a physical or mental impairment that substantially limits one or more major life activities. The SBCS questionnaire includes this definition as part of the question about owner disability.

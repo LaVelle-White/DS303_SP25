@@ -234,6 +234,6 @@ anova(m2, m.interaction)
 
 Final verdict is m.best is the optimal model has the lowest AIC and all of the predictors are significant.
 
-##  Assignment #2
+## Assignment #2
 
 Assignment #2 will cover linear models including non-linear transformations of predictors, exploring categorical predictors, and ultimately selecting the optimal model for prediction. You will be using `diamonds` data, which includes a nice balance of continuous and categorical data. I will post it online soon, and let you know when it is there. Tentative due date is next Friday 2/21.

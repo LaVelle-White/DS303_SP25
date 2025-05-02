@@ -122,9 +122,7 @@ What additional information do you get from this summary of the model output?
 
 #### Answer
 
-(Call, Residuals, More de
-
-tails on Coeffiecents, Sigif. codes, Reidual standard error, Multile R-squard, and F-statistic )\
+(Call, Residuals, More details on Coeffiecents, Sigif. codes, Reidual standard error, Multile R-squard, and F-statistic )\
 Residuals shows how far the home prices are from the predicted value.
 
 Max/ Min show the highest and lowest home values

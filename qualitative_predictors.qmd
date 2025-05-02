@@ -189,3 +189,9 @@ Provide a summary of the model output, including key coefficients and their sign
 Discuss the practical implications of your findings. How can this model inform business decisions regarding pricing, advertising, or product placement, etc?
 
 (I would say say there multiple factor that contribute to sales, being aware of competitor price would be one of the most significant, knowing our customer not over pricing our products, continue advertising and product place in the store is very important. These are key area's we should focus where can think of creative ways to engage our customers. )
+
+# References:
+
+You'll have to scroll all the to the bottom I didn't start a new chat when I started asking question:
+
+<https://chatgpt.com/c/67a7fd61-9ae4-800f-8561-5573731cafd5>

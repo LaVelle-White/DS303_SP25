@@ -1,0 +1,419 @@
+---
+title: "My Project"
+subtitle: "Small Business Road to Success"
+author: "LaVelle White"
+institute: "Chaminade University"
+date: "04/14/25"
+format:
+  revealjs:
+    theme: sky
+    transition: slide
+    slide-number: true
+editor: visual
+---
+
+# Introduction
+This project explores how different revenue levels predict key indicators of small business success using survey data from the Small Business Credit Survey.
+
+---
+
+# Packages Used
+
+```{r packages, echo=TRUE}
+library(tidyverse)     # Core data wrangling & plotting
+library(janitor)       # Clean column names
+library(readxl)        # Read Excel files
+library(ggplot2)       # Data visualization
+```
+
+---
+
+# Data Source
+
+- **Dataset**: 2024 Small Business Credit Survey (Employer Firms)  
+- **File Name**: `sbcs-employer-firms-appendix-2024.xlsx`  
+- **Sheet Used**: `Revenue`  
+- **Provider**: [Federal Reserve Banks](https://www.fedsmallbusiness.org)
+
+---
+
+
+
+# Objective
+To investigate how revenue levels predict various indicators of small business success using data from the *2024 Small Business Credit Survey*.
+
+I used logistic regression models to assess relationships between revenue and the following outcomes:
+
+1. Receiving loans or grants  
+2. Applying for financing  
+3. Receiving most/all requested funding  
+4. Operating at a profit  
+5. Reporting strong financial condition  
+6. Expecting employment growth  
+7. A combined success model
+
+```{r read-data, echo=TRUE}
+revenue_data <- read_excel("C:/Users/12103/OneDrive - Chaminade University of Honolulu/Documents/DS303_SP25/sbcs-employer-firms-appendix-2024.xlsx", sheet = "Revenue")
+```
+
+---
+
+# Approach
+
+- **Source**: 2024 Fed Small Business Credit Survey (Revenue Sheet)
+- **Method**: Logistic regression (binomial family)
+- **Metrics**: AIC scores and ANOVA p-values to evaluate model strength
+
+---
+
+# Data Preparation
+
+```{r data-cleaning, include=TRUE}
+clean_names <- revenue_data %>% clean_names()
+clean_names <- clean_names %>%
+  mutate(percent = parse_number(as.character(percent)) / 100)
+```
+
+---
+
+# Model 1: Loan or Grant Received (Setup)
+
+```{r model1, include=TRUE}
+actions_success <- clean_names %>%
+  filter(str_detect(survey_question, "(?i)actions taken in response to financial challenges")) %>%
+  mutate(success = case_when(
+    str_detect(response_option, "must be repaid") ~ 1,
+    str_detect(response_option, "do not have to be repaid") ~ 1,
+    TRUE ~ 0
+  ),
+  yes = round(percent * question_sample_size),
+  no = question_sample_size - yes,
+  revenue = factor(revenue)) %>%
+  group_by(revenue, success) %>%
+  summarise(yes = sum(yes), no = sum(no), .groups = "drop")
+
+model_actions_success <- glm(cbind(yes, no) ~ revenue, data = actions_success, family = binomial())
+actions_success$predicted <- predict(model_actions_success, type = "response")
+```
+
+---
+
+# Model 1: Loan or Grant Received (Plot)
+
+```{r plot1, echo=FALSE}
+ggplot(actions_success, aes(x = revenue, y = predicted)) +
+  geom_col(fill = "#377eb8") +
+  coord_flip() +
+  labs(
+    title = "Predicted Probability of Receiving Loan or Grant",
+    x = "Revenue Group",
+    y = "Predicted Probability"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# Actions Taken During Financial Challenges
+
+- AIC: 697.69  
+- p < 2.2e-16  
+- **Insight**: High revenue businesses (especially $5M+) were less likely to rely on external funds. Smaller firms depended more on loans/grants during hardship.
+
+---
+
+# Model 2: Applied for Financing (Setup)
+
+```{r model2, include=TRUE}
+application_success <- clean_names %>%
+  filter(str_detect(survey_question, "(?i)applications for financing")) %>%
+  mutate(success = if_else(response_option == "Applied for a loan, line of credit, or merchant cash advance", 1, 0),
+         yes = round(percent * question_sample_size),
+         no = question_sample_size - yes,
+         revenue = factor(revenue)) %>%
+  group_by(revenue, success) %>%
+  summarise(yes = sum(yes), no = sum(no), .groups = "drop")
+
+model_applications <- glm(cbind(yes, no) ~ revenue, data = application_success, family = binomial())
+application_success$predicted <- predict(model_applications, type = "response")
+```
+
+---
+
+# Model 2: Applied for Financing (Plot)
+
+```{r plot2, echo=FALSE}
+ggplot(application_success, aes(x = revenue, y = predicted)) +
+  geom_col(fill = "#4daf4a") +
+  coord_flip() +
+  labs(
+    title = "Predicted Probability of Applying for Financing",
+    x = "Revenue Group",
+    y = "Predicted Probability"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# Applied for Financing
+
+- AIC: 79.96  
+- p < 0.001  
+- **Insight**: Mid revenue firms ($25k-$500k) were less likely to apply. This may reflect barriers to access or low confidence in approval.
+
+---
+
+
+# Model 3: Funding Success (Most/All Received) (Setup)
+
+```{r model3, include=TRUE}
+outcome_success <- clean_names %>%
+  filter(str_detect(survey_question, "(?i)best outcome across loan")) %>%
+  mutate(success = case_when(
+    response_option %in% c("Most (51-99%)", "All (100%)") ~ 1,
+    TRUE ~ 0
+  ),
+  yes = round(percent * question_sample_size),
+  no = question_sample_size - yes,
+  revenue = factor(revenue)) %>%
+  group_by(revenue, success) %>%
+  summarise(yes = sum(yes), no = sum(no), .groups = "drop")
+
+model_outcome <- glm(cbind(yes, no) ~ revenue, data = outcome_success, family = binomial())
+outcome_success$predicted <- predict(model_outcome, type = "response")
+```
+
+---
+
+# Model 3: Funding Success (Plot)
+
+```{r plot3, echo=FALSE}
+ggplot(outcome_success, aes(x = revenue, y = predicted)) +
+  geom_col(fill = "#984ea3") +
+  coord_flip() +
+  labs(
+    title = "Predicted Probability of Receiving Most/All Requested Funding",
+    x = "Revenue Group",
+    y = "Predicted Probability"
+  ) +
+  theme_minimal()
+```
+
+---
+# Received Most/All Requested Funding 
+##AIC  695.44 Not significant
+##Insight Revenue did not predict success in receiving full funding. Other variables (e.g., credit score, lender type) likely matter more.
+
+---
+
+# Model 4: Profit Success (Setup)
+
+```{r model4, include=TRUE}
+profit_success <- clean_names %>%
+  filter(str_detect(survey_question, "(?i)profitability, end of 2023")) %>%
+  mutate(
+    success = if_else(response_option == "Operating at a profit", 1, 0),
+    yes = round(percent * question_sample_size),
+    no = question_sample_size - yes,
+    revenue = factor(revenue)
+  ) %>%
+  group_by(revenue, success) %>%
+  summarise(
+    yes = sum(yes),
+    no = sum(no),
+    .groups = "drop"
+  )
+
+model_profit <- glm(cbind(yes, no) ~ revenue,
+                    data = profit_success,
+                    family = binomial())
+
+profit_success$predicted <- predict(model_profit, type = "response")
+```
+
+---
+
+# Model 4: Profit Success (Plot)
+
+```{r plot4, echo=FALSE}
+ggplot(profit_success, aes(x = revenue, y = predicted)) +
+  geom_col(fill = "#e41a1c") +
+  coord_flip() +
+  labs(
+    title = "Predicted Probability of Being Profitable (End of 2023)",
+    x = "Revenue Group",
+    y = "Predicted Probability"
+  ) +
+  theme_minimal()
+```
+
+# Profitability (End of 2023)
+AIC  2359
+
+Not significant
+
+Insight  Revenue ≠ profit. Some high-revenue businesses were not profitable.
+
+---
+
+# Model 5: Condition of Success (Setup)
+
+```{r model5, include=TRUE}
+condition_success <- clean_names %>%
+  filter(str_detect(survey_question, "(?i)current financial condition")) %>%
+  mutate(
+    success = case_when(
+      response_option %in% c("Good", "Very good", "Excellent") ~ 1,
+      TRUE ~ 0
+    ),
+    yes = round(percent * question_sample_size),
+    no = question_sample_size - yes,
+    revenue = factor(revenue)
+  ) %>%
+  group_by(revenue, success) %>%
+  summarise(
+    yes = sum(yes),
+    no = sum(no),
+    .groups = "drop"
+  )
+
+model_condition <- glm(cbind(yes, no) ~ revenue,
+                       data = condition_success,
+                       family = binomial())
+
+condition_success$predicted <- predict(model_condition, type = "response")
+```
+
+---
+
+# Model 5: Condition of Success (Plot)
+
+```{r plot5, echo=FALSE}
+ggplot(condition_success, aes(x = revenue, y = predicted)) +
+  geom_col(fill = "#ff7f00") +
+  coord_flip() +
+  labs(
+    title = "Predicted Probability of Positive Financial Condition",
+    x = "Revenue Group",
+    y = "Predicted Probability"
+  ) +
+  theme_minimal()
+```
+
+# Positive Financial Condition
+AIC: 1914
+
+Not significant
+
+Insight: Subjective financial wellness wasn’t strongly tied to revenue level.
+
+
+
+---
+
+# Model 6: Employemt Success (Setup)
+
+```{r model6, include=TRUE}
+employment_success <- clean_names %>%
+  filter(str_detect(survey_question, "(?i)employment expectations")) %>%
+  mutate(
+    success = if_else(response_option == "Will increase", 1, 0),
+    yes = round(percent * question_sample_size),
+    no = question_sample_size - yes,
+    revenue = factor(revenue)
+  ) %>%
+  group_by(revenue, success) %>%
+  summarise(
+    yes = sum(yes),
+    no = sum(no),
+    .groups = "drop"
+  )
+
+model_employment <- glm(cbind(yes, no) ~ revenue,
+                        data = employment_success,
+                        family = binomial())
+
+employment_success$predicted <- predict(model_employment, type = "response")
+```
+
+---
+
+# Model 6: Employment Success (Plot)
+
+```{r plot6, echo=FALSE}
+ggplot(employment_success, aes(x = revenue, y = predicted)) +
+  geom_col(fill = "#a65628") +
+  coord_flip() +
+  labs(
+    title = "Predicted Probability of Increasing Employment",
+    x = "Revenue Group",
+    y = "Predicted Probability"
+  ) +
+  theme_minimal()
+```
+
+# Employment Growth Expectations
+AIC: 440
+
+Not significant
+
+Insight: Hiring plans appear strategy-based, not revenue-based.
+
+---
+
+# Model 7: Combind Business data (Setup)
+
+```{r model7, include=TRUE}
+clean_data <- clean_names %>%
+  rename(
+    question = survey_question,
+    response = response_option,
+    sample_size = question_sample_size
+  )
+
+
+business_data <- clean_data %>%
+  mutate(
+    applications = if_else(response == "Applied for a loan...", 1, 0),
+    outcome = if_else(response %in% c("Most (51-99%)", "All (100%)"), 1, 0),
+    success = applications + outcome,  # optional: create score
+    yes = round(percent * sample_size),
+    no = sample_size - yes
+  )
+
+model_null <- glm(cbind(yes, no) ~ 1, data = business_data, family = binomial())
+model_applications <- glm(cbind(yes, no) ~ applications, data = business_data, family = binomial())
+model_combined <- glm(cbind(yes, no) ~ applications + outcome, data = business_data, family = binomial())
+```
+
+# Combined Predictors:
+
+Applied for financing
+
+Received most/all funding
+
+AIC: 474,925.9 (lowest of all)
+
+p < 2.2e-16
+
+Insight: Businesses that both seek and secure funding are more likely to be successful. This model strongly predicts resilience and growth.
+
+
+---
+
+# Summary
+Revenue level alone is a weak predictor of success.
+
+Financing behavior particularly the act of seeking and receiving funding  is a much stronger indicator.
+
+Policy Implication: Programs aimed at improving capital access for small businesses could support long-term stability and expansion.
+
+
+
+
+# Thank You
+
+Questions?  
+LaVelle White  
+Data Science @ Chaminade University

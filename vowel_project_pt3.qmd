@@ -185,7 +185,7 @@ ggplot(word_means, aes(x = mean_f2, y = mean_f1, label = word)) +
 
 -   Which variable(s) are included?
 
-    -    Words, Vowel sound F1/F2, and Repetition.
+    -   Words, Vowel sound F1/F2, and Repetition.
 
 ```{r}
 model_f1_lm <- lm(f1 ~ rep, data = all_data)
@@ -224,7 +224,7 @@ summary(model_f1_lmm2)
 
 -   Build and run both models and display their summaries
 
-    -    I used a linear statistical model. I'm predicting F1 and F2 with Repetition, Word and Vowel category.
+    -   I used a linear statistical model. I'm predicting F1 and F2 with Repetition, Word and Vowel category.
 
 -   Compare the two models, assess model fit, and determine the better fitting one
 
